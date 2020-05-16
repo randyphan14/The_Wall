@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wall Assignment - Intermediate Version</title>
+</head>
+
+<body>
+    <div class="top">
+        <h1>CodingDojo Wall</h1>
+        <h3>Welcome {{request.session.u_fname}}</h3>
+        <h3><a href="clear">Log Off</a></h3>
+    </div>
+
+
+    <div class="posts">
+        <h2>Post a message</h2>
+        <form action="post_message" method="post">
+            {% csrf_token %}
+            <input type="text" name="desc">
+            <button type='submit'>Post a message</button>
+        </form>
+    </div>
+
+    <div class="comments">
+        <!-- for loop here to display out all posts with the newest on top-->
+        <!-- for loop within for loop here to print out all comments associated with the post with the newest on top-->
+        <!-- if current comment matches user, add delete bottom here -->
+        <h2>Wall Messages:</h2>
+        {% for msg in messages %}
+        <div class="user_messages">
+            {{msg.author.first_name}} {{msg.author.last_name}} {{msg.updated_at}}
+            <p>{{msg.desc}}</p>
+
+
+            <div class="user_comments">
+                {% for comment in msg.messages.all %}
+                {{comment.author.first_name}} {{comment.author.last_name}} {{comment.updated_at}}
+                <p>{{comment.desc}}</p>
+                {% endfor %}
+
+            </div>
+
+
+            <form action="comment/{{msg.id}}" method="POST">
+                {% csrf_token %}
+                <textarea name="cmnt" placeholder="Leave {{msg.user.first_name}} a comment..."></textarea>
+                <button type='submit'>Post a comment</button>
+            </form>
+
+        </div>
+        {% endfor %}
+
+        <h3><a href="clear">Log Off</a></h3>
+    </div>
+
+    </div>
+
+
+</body>
+
+</html>
